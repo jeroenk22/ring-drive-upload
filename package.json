@@ -21,6 +21,7 @@
   "dependencies": {
     "@googleapis/drive": "^11.0.0",
     "date-fns": "^4.1.0",
+    "google-auth-library": "^9.15.1",
     "ring-client-api": "^13.2.1"
   }
 }

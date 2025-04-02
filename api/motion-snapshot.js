@@ -1,9 +1,8 @@
 import { RingApi } from "ring-client-api";
-import drivePkg from "@googleapis/drive";
+import { google } from "@googleapis/drive";
+import { GoogleAuth } from "google-auth-library";
 import { format } from "date-fns";
 import { Buffer } from "buffer";
-
-const { google } = drivePkg;
 
 export default async function handler(req, res) {
   try {
@@ -30,7 +29,7 @@ export default async function handler(req, res) {
       Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT, "base64").toString()
     );
 
-    const auth = new google.auth.GoogleAuth({
+    const auth = new GoogleAuth({
       credentials,
       scopes: ["https://www.googleapis.com/auth/drive"],
     });
