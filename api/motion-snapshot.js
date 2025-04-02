@@ -3,6 +3,7 @@ import { google } from "googleapis";
 import { GoogleAuth } from "google-auth-library";
 import { format } from "date-fns";
 import { Buffer } from "buffer";
+import { Readable } from "stream";
 
 export default async function handler(req, res) {
   try {
@@ -47,7 +48,7 @@ export default async function handler(req, res) {
       },
       media: {
         mimeType: "image/jpeg",
-        body: Buffer.from(snapshotBuffer),
+        body: Readable.from(snapshotBuffer),
       },
     });
 
