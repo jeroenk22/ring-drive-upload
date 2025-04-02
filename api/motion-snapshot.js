@@ -1,7 +1,9 @@
 import { RingApi } from "ring-client-api";
-import { google } from "@googleapis/drive";
+import drivePkg from "@googleapis/drive";
 import { format } from "date-fns";
 import { Buffer } from "buffer";
+
+const { google } = drivePkg;
 
 export default async function handler(req, res) {
   try {
