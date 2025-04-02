@@ -1,10 +1,10 @@
 import { RingApi } from "ring-client-api";
-import pkg from "@googleapis/drive";
+import drivePkg from "@googleapis/drive";
 import { GoogleAuth } from "google-auth-library";
 import { format } from "date-fns";
 import { Buffer } from "buffer";
 
-const { google } = pkg;
+const { google } = drivePkg;
 
 export default async function handler(req, res) {
   try {
