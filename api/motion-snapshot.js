@@ -3,10 +3,6 @@ import { google } from "@googleapis/drive";
 import { format } from "date-fns";
 import { Buffer } from "buffer";
 
-export const config = {
-  runtime: "nodejs18.x",
-};
-
 export default async function handler(req, res) {
   try {
     const now = new Date();
