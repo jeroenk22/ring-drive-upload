@@ -1,10 +1,8 @@
 import { RingApi } from "ring-client-api";
-import drivePkg from "@googleapis/drive";
+import { google } from "googleapis";
 import { GoogleAuth } from "google-auth-library";
 import { format } from "date-fns";
 import { Buffer } from "buffer";
-
-const { google } = drivePkg;
 
 export default async function handler(req, res) {
   try {
@@ -36,7 +34,8 @@ export default async function handler(req, res) {
       scopes: ["https://www.googleapis.com/auth/drive"],
     });
 
-    const drive = google.drive({ version: "v3", auth });
+    const authClient = await auth.getClient();
+    const drive = google.drive({ version: "v3", auth: authClient });
 
     const ringFolderId = await getOrCreateFolder(drive, "Ring.com");
     const dateFolderId = await getOrCreateFolder(drive, dateStr, ringFolderId);
@@ -55,7 +54,9 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, filename });
   } catch (error) {
     console.error("❌ Upload error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 }
 
