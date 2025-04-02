@@ -53,15 +53,15 @@ export default async function handler(req, res) {
     });
 
     res.status(200).json({ success: true, filename });
-  } catch (err) {
-    console.error("❌ Fout tijdens upload:", err);
-    res.status(500).json({ error: "Interne fout" });
+  } catch (error) {
+    console.error("❌ Upload error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 async function getOrCreateFolder(drive, name, parentId) {
   const query = `'${
-    parentId ?? "root"
+    parentId || "root"
   }' in parents and name = '${name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
 
   const res = await drive.files.list({
