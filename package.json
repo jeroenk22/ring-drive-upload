@@ -19,7 +19,6 @@
   "homepage": "https://github.com/jeroenk22/ring-drive-upload#readme",
   "description": "",
   "dependencies": {
-    "@googleapis/drive": "^11.0.0",
     "date-fns": "^4.1.0",
     "google-auth-library": "^9.15.1",
     "googleapis": "^148.0.0",
