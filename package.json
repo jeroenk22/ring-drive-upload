@@ -1,17 +1,26 @@
 {
   "name": "ring-drive-upload",
-  "packageManager": "yarn@4.8.1",
   "version": "1.0.0",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "dev": "vercel dev"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeroenk22/ring-drive-upload.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jeroenk22/ring-drive-upload/issues"
+  },
+  "homepage": "https://github.com/jeroenk22/ring-drive-upload#readme",
+  "description": "",
   "dependencies": {
     "@googleapis/drive": "^11.0.0",
+    "date-fns": "^4.1.0",
     "ring-client-api": "^13.2.1"
-  },
-  "devDependencies": {
-    "@types/node": "^22.13.17",
-    "typescript": "^5.8.2"
   }
 }
