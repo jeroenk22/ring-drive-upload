@@ -20,9 +20,6 @@ export default async function handler(req, res) {
     const locations = await ringApi.getLocations();
     const cameras = await locations[0].cameras;
 
-    await cameras[0].requestSnapshot();
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     const snapshotBuffer = await cameras[0].getSnapshot();
 
     if (!snapshotBuffer) {
