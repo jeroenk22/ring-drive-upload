@@ -14,13 +14,18 @@ export default async function handler(req, res) {
   const localDate = toZonedTime(now, timeZone);
 
   const offset = getTimezoneOffset(timeZone, localDate);
-  console.log(` Amsterdam time zone offset: ${offset / 60} hours`);
+  console.log(`Amsterdam time zone offset: ${offset / 60} hours`);
+
+  console.log("localDate voor formating:", localDate);
+  console.log("timeZone:", timeZone);
 
   const filename = formatInTimeZone(localDate, timeZone, "dd-MM-yyyy HH:mm:ss");
 
-  console.log(` Bestandsnaam timestamp: ${filename}`);
-  console.log(` Huidige UTC tijd: ${now.toISOString()}`); // Log UTC tijd
-  console.log(` Geconverteerde Amsterdam tijd: ${localDate.toISOString()}`); // Log geconverteerde tijd
+  console.log("bestandsnaam na formatting", filename);
+
+  console.log(`Bestandsnaam timestamp: ${filename}`);
+  console.log(`Huidige UTC tijd: ${now.toISOString()}`);
+  console.log(`Geconverteerde Amsterdam tijd: ${localDate.toISOString()}`);
 
   const ringApi = new RingApi({
     refreshToken: process.env.RING_REFRESH_TOKEN,
@@ -31,7 +36,7 @@ export default async function handler(req, res) {
   const cameras = await locations[0]?.cameras;
   const snapshotBuffer = await cameras[0]?.getSnapshot();
 
-  console.log(` Snapshot buffer size: ${snapshotBuffer?.length}`);
+  console.log(`Snapshot buffer size: ${snapshotBuffer?.length}`);
 
   if (!snapshotBuffer || snapshotBuffer.length === 0) {
     return res.status(500).json({ error: "Snapshot failed or was empty" });
@@ -68,7 +73,7 @@ export default async function handler(req, res) {
 
   console.log(`✅ Bestand geüpload: ${filename}`);
   console.log(
-    ` Open map: https://drive.google.com/drive/folders/${dateFolderId}`
+    `Open map: https://drive.google.com/drive/folders/${dateFolderId}`
   );
 
   res.status(200).json({ success: true, filename });
