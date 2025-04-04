@@ -1,31 +1,25 @@
 import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
-import { formatInTimeZone, toZonedTime, getTimezoneOffset } from "date-fns-tz"; // Zorg ervoor dat deze import klopt
+import { formatInTimeZone, toZonedTime, getTimezoneOffset } from "date-fns-tz";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Jouw map-ID voor Google Drive
 const RING_FOLDER_ID = "1Di7wUq25vc3zLX9twSUeLWZf6hWQruVm";
 
 export default async function handler(req, res) {
-  // Zet de tijd om naar Amsterdam tijdzone (CET/CEST)
   const now = new Date();
   const timeZone = "Europe/Amsterdam";
 
-  // Converteer UTC naar Amsterdam tijdzone
   const localDate = toZonedTime(now, timeZone);
 
-  // Log de tijdzone-offset voor debugging
   const offset = getTimezoneOffset(timeZone, localDate);
   console.log(`🕒 Amsterdam time zone offset: ${offset / 60} hours`);
 
-  // Formatteer de datum en tijd voor de bestandsnaam
   const filename = formatInTimeZone(localDate, timeZone, "dd-MM-yyyy HH:mm:ss");
 
   console.log(`🕒 Bestandsnaam timestamp: ${filename}`);
 
-  // 📷 Snapshot ophalen van de Ring camera
   const ringApi = new RingApi({
     refreshToken: process.env.RING_REFRESH_TOKEN,
     cameraDingsPollSeconds: 0,
@@ -41,7 +35,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Snapshot failed or was empty" });
   }
 
-  // 📁 Google Drive authenticatie
   const credentials = JSON.parse(
     Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT, "base64").toString()
   );
@@ -53,14 +46,12 @@ export default async function handler(req, res) {
 
   const drive = google.drive({ version: "v3", auth });
 
-  // 📂 Maak een submap voor de datum
   const dateFolderId = await getOrCreateFolder(
     drive,
     filename.split(" ")[0],
     RING_FOLDER_ID
   );
 
-  // 📤 Upload de snapshot naar Google Drive
   await drive.files.create({
     requestBody: {
       name: filename + ".jpg",
