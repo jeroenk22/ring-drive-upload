@@ -2,6 +2,7 @@ import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
 import { formatInTimeZone, toZonedTime, getTimezoneOffset } from "date-fns-tz";
+import { enGB } from "date-fns/locale/en-GB"; // Importeer de enGB locale
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -19,7 +20,12 @@ export default async function handler(req, res) {
   console.log("localDate voor formating:", localDate);
   console.log("timeZone:", timeZone);
 
-  const filename = formatInTimeZone(localDate, timeZone, "dd-MM-yyyy HH:mm:ss");
+  const filename = formatInTimeZone(
+    localDate,
+    timeZone,
+    "dd-MM-yyyy HH:mm:ss",
+    { locale: enGB }
+  ); // Gebruik de enGB locale
 
   console.log("bestandsnaam na formatting", filename);
 
