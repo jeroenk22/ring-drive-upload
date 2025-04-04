@@ -2,19 +2,27 @@ import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
 import { format } from "date-fns";
+import { zonedTimeToUtc } from "date-fns-tz";
 import dotenv from "dotenv";
 dotenv.config();
 
-// ← Jouw eigen Ring.com map-ID hier invullen
+// Jouw map-ID voor Google Drive
 const RING_FOLDER_ID = "1Di7wUq25vc3zLX9twSUeLWZf6hWQruVm";
 
 export default async function handler(req, res) {
+  // Zet de tijd om naar Amsterdam tijdzone (CET/CEST)
   const now = new Date();
-  const dateStr = format(now, "dd-MM-yyyy");
-  const timeStr = format(now, "HH:mm:ss");
+  const timeZone = "Europe/Amsterdam";
+
+  // Converteer UTC naar Amsterdam tijdzone
+  const localDate = zonedTimeToUtc(now, timeZone);
+
+  // Formatteer de datum en tijd voor de bestandsnaam
+  const dateStr = format(localDate, "dd-MM-yyyy");
+  const timeStr = format(localDate, "HH:mm:ss");
   const filename = `${dateStr} ${timeStr}.jpg`;
 
-  // 📷 Snapshot ophalen
+  // 📷 Snapshot ophalen van de Ring camera
   const ringApi = new RingApi({
     refreshToken: process.env.RING_REFRESH_TOKEN,
     cameraDingsPollSeconds: 0,
@@ -42,10 +50,10 @@ export default async function handler(req, res) {
 
   const drive = google.drive({ version: "v3", auth });
 
-  // 📂 Submap voor de dag aanmaken (in jouw gedeelde Ring.com-map)
+  // 📂 Maak een submap voor de datum
   const dateFolderId = await getOrCreateFolder(drive, dateStr, RING_FOLDER_ID);
 
-  // 📤 Upload afbeelding
+  // 📤 Upload de snapshot naar Google Drive
   await drive.files.create({
     requestBody: {
       name: filename,
@@ -60,7 +68,7 @@ export default async function handler(req, res) {
 
   console.log(`✅ Bestand geüpload: ${filename}`);
   console.log(
-    `🔗 Dagmap: https://drive.google.com/drive/folders/${dateFolderId}`
+    `🔗 Open map: https://drive.google.com/drive/folders/${dateFolderId}`
   );
 
   res.status(200).json({ success: true, filename });
