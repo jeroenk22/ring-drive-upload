@@ -2,6 +2,7 @@ import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
 import { format } from "date-fns";
+// Correcte import voor tijdzonefunctionaliteit
 import { zonedTimeToUtc } from "date-fns-tz";
 import dotenv from "dotenv";
 dotenv.config();
