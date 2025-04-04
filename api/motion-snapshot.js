@@ -1,7 +1,7 @@
 import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
-import { formatInTimeZone, toZonedTime } from "date-fns-tz"; // Gebruik de juiste import
+import { formatInTimeZone, utcToZonedTime } from "date-fns-tz"; // Gebruik de juiste import
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   const timeZone = "Europe/Amsterdam";
 
   // Converteer UTC naar Amsterdam tijdzone
-  const localDate = toZonedTime(now, timeZone);
+  const localDate = utcToZonedTime(now, timeZone);
 
   // Formatteer de datum en tijd voor de bestandsnaam
   const filename = formatInTimeZone(localDate, timeZone, "dd-MM-yyyy HH:mm:ss");
