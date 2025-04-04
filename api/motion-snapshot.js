@@ -1,7 +1,7 @@
 import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
-import { formatInTimeZone, toZonedTime, getTimezoneOffset } from "date-fns-tz"; // Gebruik de juiste import
+import { formatInTimeZone, toZonedTime, getTimezoneOffset } from "date-fns-tz"; // Zorg ervoor dat deze import klopt
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -16,12 +16,14 @@ export default async function handler(req, res) {
   // Converteer UTC naar Amsterdam tijdzone
   const localDate = toZonedTime(now, timeZone);
 
+  // Log de tijdzone-offset voor debugging
+  const offset = getTimezoneOffset(timeZone, localDate);
+  console.log(`🕒 Amsterdam time zone offset: ${offset / 60} hours`);
+
   // Formatteer de datum en tijd voor de bestandsnaam
   const filename = formatInTimeZone(localDate, timeZone, "dd-MM-yyyy HH:mm:ss");
 
-  // Log de tijdzone offset voor debugging
-  const offset = getTimezoneOffset(timeZone, localDate);
-  console.log(`🕒 Amsterdam time zone offset: ${offset / 60} hours`);
+  console.log(`🕒 Bestandsnaam timestamp: ${filename}`);
 
   // 📷 Snapshot ophalen van de Ring camera
   const ringApi = new RingApi({
