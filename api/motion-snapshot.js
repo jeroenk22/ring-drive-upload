@@ -1,8 +1,6 @@
 import { RingApi } from "ring-client-api";
 import { google } from "googleapis";
 import { Readable } from "stream";
-import { formatInTimeZone, toZonedTime, getTimezoneOffset } from "date-fns-tz";
-import { enGB } from "date-fns/locale/en-GB"; // Importeer de enGB locale
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,28 +8,26 @@ const RING_FOLDER_ID = "1Di7wUq25vc3zLX9twSUeLWZf6hWQruVm";
 
 export default async function handler(req, res) {
   const now = new Date();
-  const timeZone = "Europe/Amsterdam";
+  const timeZoneOffset = 2; // Amsterdam is UTC+2
 
-  const localDate = toZonedTime(now, timeZone);
+  // Bereken de Amsterdamse tijd
+  const amsterdamTime = new Date(
+    now.getTime() + timeZoneOffset * 60 * 60 * 1000
+  );
 
-  const offset = getTimezoneOffset(timeZone, localDate);
-  console.log(`Amsterdam time zone offset: ${offset / 60} hours`);
+  // Formatteer de datum en tijd voor de bestandsnaam
+  const day = amsterdamTime.getDate().toString().padStart(2, "0");
+  const month = (amsterdamTime.getMonth() + 1).toString().padStart(2, "0");
+  const year = amsterdamTime.getFullYear();
+  const hours = amsterdamTime.getHours().toString().padStart(2, "0");
+  const minutes = amsterdamTime.getMinutes().toString().padStart(2, "0");
+  const seconds = amsterdamTime.getSeconds().toString().padStart(2, "0");
 
-  console.log("localDate voor formating:", localDate);
-  console.log("timeZone:", timeZone);
-
-  const filename = formatInTimeZone(
-    localDate,
-    timeZone,
-    "dd-MM-yyyy HH:mm:ss",
-    { locale: enGB }
-  ); // Gebruik de enGB locale
-
-  console.log("bestandsnaam na formatting", filename);
+  const filename = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 
   console.log(`Bestandsnaam timestamp: ${filename}`);
   console.log(`Huidige UTC tijd: ${now.toISOString()}`);
-  console.log(`Geconverteerde Amsterdam tijd: ${localDate.toISOString()}`);
+  console.log(`Geconverteerde Amsterdam tijd: ${amsterdamTime.toISOString()}`);
 
   const ringApi = new RingApi({
     refreshToken: process.env.RING_REFRESH_TOKEN,
